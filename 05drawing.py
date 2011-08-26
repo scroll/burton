@@ -7,12 +7,13 @@ from PyQt4.QtOpenGL import *
 class GLWidget(QGLWidget):
     def __init__(self, parent=None):
         super(GLWidget, self).__init__(parent)
-        self.posX = 0.0
-        self.posY = 0.0
+        self.points = [((0.0),(0.0)),]
+
+
 
     def initializeGL(self):
         # Add OpenGL initialization code here
-        pass
+        glEnable(GL_POINT_SMOOTH)
 
     def paintGL(self):
         # Update the scene here
@@ -22,7 +23,7 @@ class GLWidget(QGLWidget):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         # Draw the scene here
-        self.draw(self.posX, self.posY)
+        self.draw(self.points)
 
         # Tell the widget to redraw next time
         self.update()
@@ -31,15 +32,15 @@ class GLWidget(QGLWidget):
         glViewport(0, 0, width, height)
 
     def mouseMoveEvent(self, event):
-        self.posX = event.posF().x()
-        self.posY = event.posF().y()
+        self.points.append((2 * event.posF().x() / self.width() -1, 2 * event.posF().y() / self.height() -1))
 
-    def draw(self, posX, posY):
+    def draw(self, points):
         glPointSize(5.0)
         glBegin(GL_POINTS)
         glColor3f(0.0, 0.0, 0.0)
-        print posX, posY
-        glVertex2f(posX, posY)
+        # print posX, posY
+        for point in points:
+            glVertex2f(point[0], point[1])
         glEnd()
 
 
