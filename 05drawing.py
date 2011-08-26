@@ -3,13 +3,12 @@ from OpenGL.GL import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtOpenGL import *
+from random import uniform
 
 class GLWidget(QGLWidget):
     def __init__(self, parent=None):
         super(GLWidget, self).__init__(parent)
         self.points = [((0.0),(0.0)),]
-
-
 
     def initializeGL(self):
         # Add OpenGL initialization code here
@@ -32,13 +31,16 @@ class GLWidget(QGLWidget):
         glViewport(0, 0, width, height)
 
     def mouseMoveEvent(self, event):
-        self.points.append((2 * event.posF().x() / self.width() -1, 2 * event.posF().y() / self.height() -1))
+        self.points.append((2 * event.posF().x() / self.width() -1, -(2 * event.posF().y() / self.height() -1)))
+        if len(self.points) > 100:
+            self.points.pop(0)
+            
 
     def draw(self, points):
-        glPointSize(5.0)
+        glPointSize(5.5)
         glBegin(GL_POINTS)
+        # glBegin(GL_LINE_STRIP)
         glColor3f(0.0, 0.0, 0.0)
-        # print posX, posY
         for point in points:
             glVertex2f(point[0], point[1])
         glEnd()
